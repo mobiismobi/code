@@ -1,0 +1,14 @@
+void display_tasks(Task task_list[], int total_tasks, int selected_task_index, bool is_in_subtask_mode) {
+    (void)is_in_subtask_mode; // برای جلوگیری از هشدار استفاده نشدن پارامتر
+    clear();
+    for (int i = 0; i < total_tasks; i++) {
+        if (i == selected_task_index) {
+            attron(A_REVERSE);
+        }
+        mvprintw(i, 0, "%d. [%c] %s", i + 1, task_list[i].is_completed ? 'x' : ' ', task_list[i].name);
+        if (i == selected_task_index) {
+            attroff(A_REVERSE);
+        }
+    }
+    refresh();
+}
