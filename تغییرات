@@ -14,3 +14,5 @@ void display_tasks(Task task_list[], int total_tasks, int selected_task_index) {
 
 
 void display_tasks(Task task_list[], int total_tasks, int selected_task_index, bool is_in_subtask_mode);
+
+display_tasks(task_list, *total_tasks, *selected_task_index, *is_in_subtask_mode);
