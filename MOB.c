@@ -287,17 +287,17 @@ void toggle_subtask_completion() { // تغییر وضعیت انجام نشده 
     refresh();
 }
 
-void show_tasks() { //نمایش تسک ها
+void show_tasks() { // نمایش تسک‌ها
     werase(task_window);
     box(task_window, 0, 0);
     mvwprintw(task_window, 0, 2, "Tasks");
 
     start_color(); // فعال کردن رنگ‌ها
-    init_pair(2, COLOR_BLACK, COLOR_GREEN); //رنگ هایلایت
+    init_pair(2, COLOR_BLACK, COLOR_BLUE); // رنگ هایلایت: مشکی روی آبی
 
     for (int i = 0; i < total_tasks; i++) {
         if (i == current_task_index && !is_subtask_mode) {
-            wattron(task_window, COLOR_PAIR(2)); //هایلایت
+            wattron(task_window, COLOR_PAIR(2)); // هایلایت
         }
         mvwprintw(task_window, i + 1, 2, "%d. [%c] %s",
                   task_list[i].priority_level,
@@ -311,13 +311,13 @@ void show_tasks() { //نمایش تسک ها
     wrefresh(task_window);
 }
 
-void show_subtasks() {
+void show_subtasks() { // نمایش سابتسک‌ها
     werase(subtask_window);
     box(subtask_window, 0, 0);
     mvwprintw(subtask_window, 0, 2, "Subtasks");
 
     start_color(); // فعال کردن رنگ‌ها
-    init_pair(2, COLOR_BLACK, COLOR_GREEN);
+    init_pair(2, COLOR_BLACK, COLOR_BLUE); // رنگ هایلایت: مشکی روی آبی
 
     if (total_tasks == 0) {
         mvwprintw(subtask_window, 1, 2, "No tasks available.");
@@ -325,11 +325,11 @@ void show_subtasks() {
         Task *current_task = &task_list[current_task_index];
         for (int i = 0; i < current_task->sub_item_count; i++) {
             if (i == current_subtask_index && is_subtask_mode) {
-                wattron(subtask_window, COLOR_PAIR(2));
+                wattron(subtask_window, COLOR_PAIR(2)); // هایلایت
             }
             mvwprintw(subtask_window, i + 1, 2, "%d. [%c] %s",
-                      i+1,
-                      current_task->sub_items[i].is_done ? 'x' : ' ', //نمایش وضعیت انجام شده یا نشده
+                      i + 1,
+                      current_task->sub_items[i].is_done ? 'x' : ' ', // نمایش وضعیت انجام شده یا نشده
                       current_task->sub_items[i].title);
             if (i == current_subtask_index && is_subtask_mode) {
                 wattroff(subtask_window, COLOR_PAIR(2));
