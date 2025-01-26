@@ -38,35 +38,41 @@ int current_category_index = 0;
 
 WINDOW *task_window, *subtask_window, *category_window, *deadline_window, *description_window;
 
-void initialize_windows() {  //تابع رسم پنجره ها
+void initialize_windows() {
     clear();
     refresh();
 
+    // پنجره Tasks در سمت چپ بالا
     task_window = newwin(15, 40, 0, 0);
     box(task_window, 0, 0);
     mvwprintw(task_window, 0, 2, "Tasks");
     wrefresh(task_window);
 
-    subtask_window = newwin(15, 40, 0, 40);
-    box(subtask_window, 0, 0);
-    mvwprintw(subtask_window, 0, 2, "Subtasks");
-    wrefresh(subtask_window);
-
+    // پنجره Categories در سمت چپ پایین
     category_window = newwin(5, 40, 15, 0);
     box(category_window, 0, 0);
     mvwprintw(category_window, 0, 2, "Categories");
     wrefresh(category_window);
 
-    deadline_window = newwin(5, 40, 15, 40);
-    box(deadline_window, 0, 0);
-    mvwprintw(deadline_window, 0, 2, "Deadline");
-    wrefresh(deadline_window);
-
-    description_window = newwin(5, 80, 20, 0);
+    // پنجره Description در سمت راست بالا
+    description_window = newwin(10, 40, 0, 40);
     box(description_window, 0, 0);
     mvwprintw(description_window, 0, 2, "Description");
     wrefresh(description_window);
 
+    // پنجره Subtasks در زیر پنجره Description
+    subtask_window = newwin(10, 40, 10, 40);
+    box(subtask_window, 0, 0);
+    mvwprintw(subtask_window, 0, 2, "Subtasks");
+    wrefresh(subtask_window);
+
+    // پنجره Deadline در سمت راست پایین
+    deadline_window = newwin(5, 40, 20, 40);
+    box(deadline_window, 0, 0);
+    mvwprintw(deadline_window, 0, 2, "Deadline");
+    wrefresh(deadline_window);
+
+    // نمایش راهنما در پایین صفحه
     mvprintw(25, 0, "Keys: 'q' to quit, 'a' to add task, 'j'/'k' to navigate, 'd' to delete, 'SPACE' to toggle status, 's' to sort, 'l' to point subtasks, 'h' to back task, 'e' to edit task's name, 'r' to edit task's desciption, 'n' to add new deadline, 'c' to edit categories, 'w' to save, 'x' to retrive.");
     refresh();
 }
@@ -92,16 +98,7 @@ int check_date_format(const char *date) { //تابع بررسی فزمت تار�
         return 0;
     }
 
-    int days_in_month[] = {31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29};
-
-    // بررسی سال کبیسه شمسی
-    int leap_years[] = {1, 5, 9, 13, 17, 22, 26, 30}; // سال‌های کبیسه در یک دوره‌ی ۳۳ ساله
-    for (int i = 0; i < 8; i++) {
-        if (year % 33 == leap_years[i]) {
-            days_in_month[11] = 30; 
-            break;
-        }
-    }
+    int days_in_month[] = {31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29}; // تعداد روزهای هر ماه
 
     // بررسی تعداد روز معتبر در ماه
     if (day < 1 || day > days_in_month[month - 1]) {
