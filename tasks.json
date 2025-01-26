@@ -1,0 +1,40 @@
+[
+    {
+        "name": "Task 1",
+        "priority": 1,
+        "description": "This is the first task.",
+        "deadline": "25/01/2025",
+        "categories": ["Work", "Urgent"],
+        "subtasks": [
+            {
+                "name": "Subtask 1.1",
+                "status": "pending"
+            },
+            {
+                "name": "Subtask 1.2",
+                "status": "done"
+            }
+        ]
+    },
+    {
+        "name": "Task 2",
+        "priority": 2,
+        "description": "This is the second task.",
+        "deadline": "26/01/2025",
+        "categories": ["Personal"],
+        "subtasks": []
+    },
+    {
+        "name": "Task 3",
+        "priority": 3,
+        "description": "This is the third task.",
+        "deadline": "27/01/2025",
+        "categories": ["Shopping"],
+        "subtasks": [
+            {
+                "name": "Subtask 3.1",
+                "status": "pending"
+            }
+        ]
+    }
+]
