@@ -135,9 +135,11 @@ void create_task() {
         }
     } while (!check_date_format(due_date));
 
-    mvprintw(31 + new_task->tag_count, 0, "Please enter the task details: ");
+    // Get task description
+    mvprintw(31 + new_task->tag_count, 0, "Please enter your description: ");
     getnstr(details, 99);
 
+    // Get task priority
     mvprintw(32 + new_task->tag_count, 0, "Please enter the priority (1-9): ");
     scanw("%d", &priority_level);
     if (priority_level < 1 || priority_level > 9) priority_level = 1; 
