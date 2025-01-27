@@ -67,10 +67,10 @@ void initialize_windows() {
 int check_date_format(const char *date) {
     int day, month, year;
     if (sscanf(date, "%d/%d/%d", &day, &month, &year) != 3) {
-        return 0; // فرمت نادرست
+        return 0; 
     }
     
-    // بررسی مقادیر
+   
     if (month < 1 || month > 12 || day < 1 || day > 31) {
         return 0;
     }
