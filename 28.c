@@ -31,12 +31,10 @@ int current_category_index = 0;
 
 WINDOW *task_window, *subtask_window, *category_window, *deadline_window, *description_window;
 
-int message_line = 29; // Starting line for messages
-
 void clear_message_area() {
+    mvprintw(27, 0, "                                                    "); // Clear line 27
+    mvprintw(28, 0, "                                                    "); // Clear line 28
     mvprintw(29, 0, "                                                    "); // Clear line 29
-    mvprintw(30, 0, "                                                    "); // Clear line 30
-    mvprintw(31, 0, "                                                    "); // Clear line 31
 }
 
 void initialize_windows() {
@@ -99,7 +97,7 @@ int check_date_format(const char *date) {
 void create_task() { 
     if (total_tasks >= 100) { // MAX_TASKS
         clear_message_area(); // Clear previous messages
-        mvprintw(message_line++, 0, "Sorry! Task limit reached. Cannot add more tasks.");
+        mvprintw(27, 0, "Sorry! Task limit reached. Cannot add more tasks.");
         refresh();
         return;
     }
@@ -112,7 +110,7 @@ void create_task() {
     echo(); 
     curs_set(1); 
 
-    mvprintw(message_line++, 0, "Please enter the task name: ");
+    mvprintw(27, 0, "Please enter the task name: ");
     getnstr(task_title, 49); // TASK_NAME_LENGTH - 1 
 
     Task *new_task = &task_list[total_tasks++];
@@ -121,7 +119,7 @@ void create_task() {
 
     do {
         char tag[30]; // CATEGORY_NAME_LENGTH
-        mvprintw(message_line++, 0, "Please enter category %d (or type 'done' to finish): ", new_task->tag_count + 1);
+        mvprintw(28 + new_task->tag_count, 0, "Please enter category %d (or type 'done' to finish): ", new_task->tag_count + 1);
         getnstr(tag, 29); // CATEGORY_NAME_LENGTH - 1
 
         if (strcmp(tag, "done") == 0) {
@@ -137,19 +135,19 @@ void create_task() {
     } while (1); // Loop until the user types 'done'
 
     do {
-        mvprintw(message_line++, 0, "Please enter the deadline (DD/MM/YYYY): ");
+        mvprintw(28 + new_task->tag_count, 0, "Please enter the deadline (DD/MM/YYYY): ");
         getnstr(due_date, 10);
         if (!check_date_format(due_date)) {
-            mvprintw(message_line++, 0, "Invalid date format. Please try again.   ");
+            mvprintw(30 + new_task->tag_count, 0, "Invalid date format. Please try again.   ");
         }
     } while (!check_date_format(due_date));
 
     // Get task description
-    mvprintw(message_line++, 0, "Please enter your description: ");
+    mvprintw(31 + new_task->tag_count, 0, "Please enter your description: ");
     getnstr(details, 99);
 
     // Get task priority
-    mvprintw(message_line++, 0, "Please enter the priority (1-9): ");
+    mvprintw(32 + new_task->tag_count, 0, "Please enter the priority (1-9): ");
     scanw("%d", &priority_level);
     if (priority_level < 1 || priority_level > 9) priority_level = 1; 
 
@@ -164,14 +162,14 @@ void create_task() {
     new_task->sub_item_count = 0;
 
     clear_message_area(); // Clear previous messages
-    mvprintw(message_line++, 0, "Task added successfully!                             ");
+    mvprintw(27, 0, "Task added successfully!                             ");
     refresh();
 }
 
 void create_subtask() { 
     if (total_tasks == 0) {
         clear_message_area(); // Clear previous messages
-        mvprintw(message_line++, 0, "No tasks available to add a subtask.     ");
+        mvprintw(27, 0, "No tasks available to add a subtask.     ");
         refresh();
         return;
     }
@@ -179,7 +177,7 @@ void create_subtask() {
     Task *current_task = &task_list[current_task_index];
     if (current_task->sub_item_count >= 50) { // MAX_SUBTASKS
         clear_message_area(); // Clear previous messages
-        mvprintw(message_line++, 0, "Subtask limit reached for this task.     ");
+        mvprintw(27, 0, "Subtask limit reached for this task.     ");
         refresh();
         return;
     }
@@ -187,7 +185,7 @@ void create_subtask() {
     char subtask_title[50]; // SUBTASK_NAME_LENGTH
     echo();
     curs_set(1);
-    mvprintw(message_line++, 0, "Please enter the subtask name: ");
+    mvprintw(27, 0, "Please enter the subtask name: ");
     getnstr(subtask_title, 49); // SUBTASK_NAME_LENGTH - 1
     noecho();
     curs_set(0);
@@ -197,14 +195,14 @@ void create_subtask() {
     new_subtask->is_done = 0; 
 
     clear_message_area(); // Clear previous messages
-    mvprintw(message_line++, 0, "Subtask added successfully!             ");
+    mvprintw(27, 0, "Subtask added successfully!             ");
     refresh();
 }
 
 void remove_task() { 
     if (total_tasks == 0) {
         clear_message_area(); // Clear previous messages
-        mvprintw(message_line++, 0, "No tasks available to delete. ");
+        mvprintw(27, 0, "No tasks available to delete. ");
         refresh();
         return;
     }
@@ -220,14 +218,14 @@ void remove_task() {
     }
 
     clear_message_area(); // Clear previous messages
-    mvprintw(message_line++, 0, "Task deleted successfully!           ");
+    mvprintw(27, 0, "Task deleted successfully!           ");
     refresh();
 }
 
 void remove_subtask() { 
     if (total_tasks == 0) {
         clear_message_area(); // Clear previous messages
-        mvprintw(message_line++, 0, "No tasks available to delete a subtask. ");
+        mvprintw(27, 0, "No tasks available to delete a subtask. ");
         refresh();
         return;
     }
@@ -235,7 +233,7 @@ void remove_subtask() {
     Task *current_task = &task_list[current_task_index];
     if (current_task->sub_item_count == 0) {
         clear_message_area(); // Clear previous messages
-        mvprintw(message_line++, 0, "No subtasks available to delete.         ");
+        mvprintw(27, 0, "No subtasks available to delete.         ");
         refresh();
         return;
     }
@@ -249,14 +247,14 @@ void remove_subtask() {
     }
 
     clear_message_area(); // Clear previous messages
-    mvprintw(message_line++, 0, "Subtask deleted successfully!           ");
+    mvprintw(27, 0, "Subtask deleted successfully!           ");
     refresh();
 }
 
 void toggle_task_completion() { 
     if (total_tasks == 0) {
         clear_message_area(); // Clear previous messages
-        mvprintw(message_line++, 0, "No tasks available to toggle completion. ");
+        mvprintw(27, 0, "No tasks available to toggle completion. ");
         refresh();
         return;
     }
@@ -266,14 +264,14 @@ void toggle_task_completion() {
     } 
 
     clear_message_area(); // Clear previous messages
-    mvprintw(message_line++, 0, "Task completion status toggled successfully!     ");
+    mvprintw(27, 0, "Task completion status toggled successfully!     ");
     refresh();
 }
 
 void toggle_subtask_completion() { 
     if (total_tasks == 0) {
         clear_message_area(); // Clear previous messages
-        mvprintw(message_line++, 0, "No tasks available to toggle subtask completion. ");
+        mvprintw(27, 0, "No tasks available to toggle subtask completion. ");
         refresh();
         return;
     }
@@ -281,7 +279,7 @@ void toggle_subtask_completion() {
     Task *current_task = &task_list[current_task_index];
     if (current_task->sub_item_count == 0) {
         clear_message_area(); // Clear previous messages
-        mvprintw(message_line++, 0, "No subtasks available to toggle.         ");
+        mvprintw(27, 0, "No subtasks available to toggle.         ");
         refresh();
         return;
     }
@@ -290,7 +288,7 @@ void toggle_subtask_completion() {
     current_subtask->is_done = !current_subtask->is_done;
 
     clear_message_area(); // Clear previous messages
-    mvprintw(message_line++, 0, "Subtask completion status toggled successfully!     ");
+    mvprintw(27, 0, "Subtask completion status toggled successfully!     ");
     refresh();
 }
 
@@ -413,13 +411,13 @@ void manage_tags() {
                 noecho();
                 curs_set(0);
                 clear_message_area(); // Clear previous messages
-                mvprintw(28, 0, "Category added successfully!");
+                mvprintw(27, 0, "Category added successfully!");
                 break;
 
             case 'd': 
                 if (task_list[current_task_index].tag_count == 0) {
                     clear_message_area(); // Clear previous messages
-                    mvprintw(28, 0, "No categories available to delete.");
+                    mvprintw(27, 0, "No categories available to delete.");
                 } else {
                     for (int i = current_category_index; i < task_list[current_task_index].tag_count - 1; i++) {
                         free(task_list[current_task_index].tags[i]); // Free the memory for the category
@@ -431,7 +429,7 @@ void manage_tags() {
                         current_category_index = task_list[current_task_index].tag_count - 1;
                     }
                     clear_message_area(); // Clear previous messages
-                    mvprintw(28, 0, "Category deleted successfully!");
+                    mvprintw(27, 0, "Category deleted successfully!");
                 }
                 break;
 
@@ -503,26 +501,26 @@ void sort_task_list() {
         case 'p':
             qsort(task_list, total_tasks, sizeof(Task), compare_by_priority);
             clear_message_area(); // Clear previous messages
-            mvprintw(28, 0, "Tasks sorted by priority successfully!                                ");
+            mvprintw(27, 0, "Tasks sorted by priority successfully!                                ");
             break;
         case 'd':
             qsort(task_list, total_tasks, sizeof(Task), compare_by_due_date);
             clear_message_area(); // Clear previous messages
-            mvprintw(28, 0, "Tasks sorted by due date successfully!                           ");
+            mvprintw(27, 0, "Tasks sorted by due date successfully!                           ");
             break;
         case 'c':
             qsort(task_list, total_tasks, sizeof(Task), compare_by_completion_status);
             clear_message_area(); // Clear previous messages
-            mvprintw(28, 0, "Tasks sorted by completion status successfully!                           ");
+            mvprintw(27, 0, "Tasks sorted by completion status successfully!                           ");
             break;
         case 'n': // New option for sorting by creation time
             qsort(task_list, total_tasks, sizeof(Task), compare_by_creation_time);
             clear_message_area(); // Clear previous messages
-            mvprintw(28, 0, "Tasks sorted by creation time successfully!                           ");
+            mvprintw(27, 0, "Tasks sorted by creation time successfully!                           ");
             break;
         default:
             clear_message_area(); // Clear previous messages
-            mvprintw(28, 0, "Invalid sort choice.                                 ");
+            mvprintw(27, 0, "Invalid sort choice.                                 ");
             return;
     }
 
@@ -532,45 +530,45 @@ void sort_task_list() {
 void edit_task_title() { 
     if (total_tasks == 0) {
         clear_message_area(); // Clear previous messages
-        mvprintw(28, 0, "No tasks available to edit.");
+        mvprintw(27, 0, "No tasks available to edit.");
         refresh();
         return;
     }
 
     echo();
     curs_set(1);
-    mvprintw(28, 0, "Enter the new task name: ");
+    mvprintw(27, 0, "Enter the new task name: ");
     getnstr(task_list[current_task_index].title, 49); // TASK_NAME_LENGTH - 1
     noecho();
     curs_set(0);
     clear_message_area(); // Clear previous messages
-    mvprintw(28, 0, "Task name updated successfully!");
+    mvprintw(27, 0, "Task name updated successfully!");
     refresh();
 }
 
 void edit_task_details() { 
     if (total_tasks == 0) {
         clear_message_area(); // Clear previous messages
-        mvprintw(28, 0, "No tasks available to edit.");
+        mvprintw(27, 0, "No tasks available to edit.");
         refresh();
         return;
     }
 
     echo();
     curs_set(1);
-    mvprintw(28, 0, "Enter the new description: ");
+    mvprintw(27, 0, "Enter the new description: ");
     getnstr(task_list[current_task_index].details, 99);
     noecho();
     curs_set(0);
     clear_message_area(); // Clear previous messages
-    mvprintw(28, 0, "Task description updated successfully!");
+    mvprintw(27, 0, "Task description updated successfully!");
     refresh();
 }
 
 void update_due_date() { 
     if (total_tasks == 0) {
         clear_message_area(); // Clear previous messages
-        mvprintw(28, 0, "No tasks available to edit.");
+        mvprintw(27, 0, "No tasks available to edit.");
         refresh();
         return;
     }
@@ -579,10 +577,10 @@ void update_due_date() {
     echo();
     curs_set(1);
     do {
-        mvprintw(28, 0, "Enter the new deadline (DD/MM/YYYY): ");
+        mvprintw(27, 0, "Enter the new deadline (DD/MM/YYYY): ");
         getnstr(new_due_date, 10);
         if (!check_date_format(new_due_date)) {
-            mvprintw(29, 0, "Invalid date format. Please try again.");
+            mvprintw(28, 0, "Invalid date format. Please try again.");
         }
     } while (!check_date_format(new_due_date));
 
@@ -590,7 +588,7 @@ void update_due_date() {
     noecho();
     curs_set(0);
     clear_message_area(); // Clear previous messages
-    mvprintw(28, 0, "Deadline updated successfully!");
+    mvprintw(27, 0, "Deadline updated successfully!");
     refresh();
 }
 
@@ -632,7 +630,7 @@ void save_tasks_to_file(const char *filename) {
     cJSON_Delete(json_root);
     free(json_string);
     clear_message_area(); // Clear previous messages
-    mvprintw(28, 0, "Tasks saved to file successfully.");
+    mvprintw(27, 0, "Tasks saved to file successfully.");
     refresh();
 }
 
@@ -640,7 +638,7 @@ void load_tasks_from_file(const char *filename) {
     FILE *file = fopen(filename, "r"); 
     if (!file) {
         clear_message_area(); // Clear previous messages
-        mvprintw(28, 0, "No file found to load tasks.");
+        mvprintw(27, 0, "No file found to load tasks.");
         refresh();
         return;
     }
@@ -656,7 +654,7 @@ void load_tasks_from_file(const char *filename) {
     cJSON *json_root = cJSON_Parse(json_string); 
     if (!json_root) {
         clear_message_area(); // Clear previous messages
-        mvprintw(28, 0, "Failed to parse tasks from file.");
+        mvprintw(27, 0, "Failed to parse tasks from file.");
         free(json_string);
         refresh();
         return;
@@ -709,7 +707,7 @@ void load_tasks_from_file(const char *filename) {
     cJSON_Delete(json_root);
     free(json_string);
     clear_message_area(); // Clear previous messages
-    mvprintw(28, 0, "Tasks loaded from file successfully.");
+    mvprintw(27, 0, "Tasks loaded from file successfully.");
     refresh();
 }
 
