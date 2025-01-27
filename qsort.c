@@ -431,28 +431,17 @@ void manage_tags() {
     }
 }
 
-// Function to compare subtasks for qsort
+// توابع مقایسه برای qsort
 int compare_subtasks(const void *a, const void *b) {
     const Subtask *subtaskA = (const Subtask *)a;
     const Subtask *subtaskB = (const Subtask *)b;
     return strcmp(subtaskA->title, subtaskB->title);
 }
 
-// Function to compare tags for qsort
 int compare_tags(const void *a, const void *b) {
     const char *tagA = *(const char **)a;
     const char *tagB = *(const char **)b;
     return strcmp(tagA, tagB);
-}
-
-// Function to sort subtasks using qsort
-void sort_subtasks(Subtask *subtasks, int count) {
-    qsort(subtasks, count, sizeof(Subtask), compare_subtasks);
-}
-
-// Function to sort tags using qsort
-void sort_tags(char **tags, int count) {
-    qsort(tags, count, sizeof(char *), compare_tags);
 }
 
 void sort_task_list() { 
@@ -462,11 +451,11 @@ void sort_task_list() {
     char sort_choice = getch();
     switch (sort_choice) {
         case 'n':
-            sort_tags(task_list[current_task_index].tags, task_list[current_task_index].tag_count);
+            qsort(task_list[current_task_index].tags, task_list[current_task_index].tag_count, sizeof(char*), compare_tags);
             mvprintw(27, 0, "Tags sorted by name successfully!                                ");
             break;
         case 's':
-            sort_subtasks(task_list[current_task_index].sub_items, task_list[current_task_index].sub_item_count);
+            qsort(task_list[current_task_index].sub_items, task_list[current_task_index].sub_item_count, sizeof(Subtask), compare_subtasks);
             mvprintw(27, 0, "Subtasks sorted by name successfully!                           ");
             break;
         default:
@@ -714,4 +703,39 @@ void handle_input() {
                 edit_task_title();
                 break;
             case 'r':
-                edit_task_details
+                edit_task_details();
+                break;
+            case 'n':
+                update_due_date();
+                break;
+            case 'c':
+                manage_tags();
+                break;
+            case 'w': 
+                save_tasks_to_file("tasks.json");
+                break;
+            case 'x': 
+                load_tasks_from_file("tasks.json");
+                show_task_metadata(); // Changed function name
+                break;
+        }
+        show_tasks();
+        show_subtasks();
+        show_task_metadata(); // Changed function name
+    }
+}
+
+int main() {
+    initscr();
+    cbreak();
+    noecho();
+    keypad(stdscr, TRUE);
+    curs_set(0);
+
+    initialize_windows();
+
+    handle_input(); // Call input handling function
+
+    endwin();
+    return 0;
+}
